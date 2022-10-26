@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ -z "$@" ]; then
+	echo "nc-text: text parameter needed"
+fi
+
+echo "$@" > "$SNAP_DATA"/nc-text.log
+nc -w1 localhost 9990 < "$SNAP_DATA"/nc-text.log

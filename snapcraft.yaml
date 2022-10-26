@@ -1,0 +1,44 @@
+name: daemon-example
+summary: deamon example snap
+description: |
+    This is an example snap used for the snap deamons workshop
+version: '1.0'
+base: core22
+confinement: strict
+
+parts:
+  examples:
+    plugin: nil
+    source: .
+    override-build: make all
+    stage-packages: 
+      - netcat
+  copy:
+    plugin: dump
+    source: .
+    prime: 
+      - bin/
+
+  deps:
+    plugin: nil
+    stage-packages: 
+      - netcat
+
+apps:
+  exampled:
+    command: bin/exampled -l $SNAP_DATA/exampled.dat
+    daemon: simple
+    plugs: [daemon-notify]
+    restart-condition: on-failure
+
+  exampleauxd:
+    command: bin/exampleauxd
+    daemon: simple
+    after: 
+      - exampled
+    plugs: [daemon-notify]
+    restart-condition: on-failure
+
+  send:
+    command: bin/nc-text
+
