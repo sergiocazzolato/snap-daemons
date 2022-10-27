@@ -8,27 +8,27 @@ confinement: strict
 
 parts:
   examples:
-    plugin: nil
+    plugin: make
     source: .
-    override-build: make all
+    override-build: |
+      make all
+      make install
+      make clean
     stage-packages: 
       - netcat
+
   copy:
     plugin: dump
     source: .
+    after: [ examples ]
     prime: 
       - bin/
-
-  deps:
-    plugin: nil
-    stage-packages: 
-      - netcat
 
 apps:
   exampled:
     command: bin/exampled -l $SNAP_DATA/exampled.dat
     daemon: simple
-    plugs: [daemon-notify]
+    plugs: [network, network-bind, daemon-notify]
     restart-condition: on-failure
 
   exampleauxd:
@@ -36,9 +36,16 @@ apps:
     daemon: simple
     after: 
       - exampled
-    plugs: [daemon-notify]
+    plugs: [network, network-bind, daemon-notify]
     restart-condition: on-failure
 
-  send:
-    command: bin/nc-text
+  send-auxd:
+    command: bin/send-auxd
+    plugs: [network]
 
+  send-d:
+    command: bin/send-d
+    plugs: [network]
+
+  show:
+    command: bin/show
