@@ -3,8 +3,6 @@ all:
 	gcc src/exampleauxd.c -o exampleauxd
 
 install:
-	install -m 0755 exampled bin/exampled
-	install -m 0755 exampleauxd bin/exampleauxd
-
-clean:
-	rm -f exampled exampleauxd
+	mkdir -p $(DESTDIR)/bin
+	cp exampled $(DESTDIR)/bin/exampled
+	cp exampleauxd $(DESTDIR)/bin/exampleauxd
